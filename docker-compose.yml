@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  # docker file
+  python-selenium:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    hostname: python-selenium
+    restart: always
+    ports:
+      - "8080:8080"
