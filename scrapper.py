@@ -127,14 +127,18 @@ class Scrapper():
             features['disposicion'] = 'Frente'
 
         return features
+
     def get_users_views(self):
         try:
             views = self._get_attribute(value='user-views', by=By.ID)
             items = views.find_elements(By.TAG_NAME, 'p')
-            publicado = items[0].text
-            visitas = items[1].text
+            publicado = items[0].text.split("Publicado hace ")[1]
+            if len(items) == 2:
+                visitas = items[1].text.split(" visualizaciones")[0]
+            else:
+                visitas = "Not Found"
         except Exception:
-            {'publicado_antiguedad': 'Not Found', 'visitas': 'Not Found'}
+            return {'publicado_antiguedad': 'Not Found', 'visitas': 'Not Found'}
         return {'publicado_antiguedad': publicado, 'visitas': visitas}
 
 
