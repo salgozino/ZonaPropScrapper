@@ -52,9 +52,13 @@ class Scrapper():
     def get_price(self):
         try:
             price = self._get_attribute('price-items')
-        except Exception:
+            print(price.text)
+            value = int(re.search(r'\d{1,3}(?:\.\d{3})*', price.text).group().replace('.', ''))
+        except Exception as e:
+            print(e)
             return 'Not Found'
-        return price.text
+            
+        return value
 
     def get_expensas(self):
         try:
