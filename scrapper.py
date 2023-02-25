@@ -4,6 +4,7 @@ import cloudscraper
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from fake_headers import Headers
+import re
 
 header = Headers(
     browser="chrome",  # Generate only Chrome UA
@@ -58,9 +59,10 @@ class Scrapper():
     def get_expensas(self):
         try:
             expensas = self._get_attribute('block-expensas')
+            value = int(re.search(r'\d{1,3}(?:\.\d{3})*', expensas.text).group().replace('.', ''))
         except Exception:
             return 'Not Found'
-        return expensas.text
+        return value
 
     def get_ubicacion(self):
         try:
