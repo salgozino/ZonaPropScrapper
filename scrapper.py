@@ -145,8 +145,8 @@ class Scrapper():
 def main(url):
     scrapper = Scrapper(url)
 
-    featuers = scrapper.get_property()
-    print(featuers)
+    features = scrapper.get_property()
+    print(features)
 
 
 if __name__ == "__main__":
