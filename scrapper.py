@@ -42,7 +42,7 @@ class Scrapper():
         barrio, direccion = self.get_ubicacion()
         features = self.get_features()
         visitas = self.get_users_views()
-        return {'price': price,
+        return {'precio': price,
                 'expensas': expensas,
                 'barrio': barrio,
                 'direccion': direccion,
