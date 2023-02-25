@@ -57,7 +57,6 @@ class Scrapper():
         except Exception as e:
             print(e)
             return 'Not Found'
-            
         return value
 
     def get_expensas(self):
@@ -78,7 +77,7 @@ class Scrapper():
         return barrio, direccion
 
     def get_features(self):
-        
+
         features = {
             'superficie_total': None,
             'superficie_cubierta': None,
@@ -89,6 +88,7 @@ class Scrapper():
             'antiguedad': None,
             'otros': None,
             'n_dormitorios': None,
+            'ambientes': None,
             'disposicion': None}
         try:
             attributes = self._get_attribute('section-icon-features')
@@ -108,8 +108,11 @@ class Scrapper():
                     features['antiguedad'] = text.split(' ')[0]
                 elif 'Frente' in text or 'Contrafrente' in text:
                     features['disposicion'] = text
+                elif 'Ambiente' in text or 'Ambientes' in text:
+                    features['ambientes'] = int(text.split(" ")[0])
                 else:
-                    otros.join(text + ', ')
+                    print('in otros')
+                    otros += text + ', '
             # remuevo el ultimo ", " de otros si habia algo agregado.
             features['otros'] = otros if len(otros) == 0 else otros[:-2]
             if features['disposicion'] is None:
