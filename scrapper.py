@@ -69,7 +69,7 @@ class Scrapper():
             location = self._get_attribute('title-location')
         except Exception:
             return 'Not Found', 'Not Found'
-        barrio = ','.join(location.text.split('\n')[0].split(',')[1:3])
+        barrio = ', '.join(location.text.split('\n')[1].split(', ')[1:3])
         direccion = location.text.split(',')[0]
         return barrio, direccion
 
@@ -84,10 +84,12 @@ class Scrapper():
             'n_banos': None,
             'antiguedad': None,
             'otros': None,
-            'n_dormitorios': None}
+            'n_dormitorios': None,
+            'disposicion': None}
         try:
             attributes = self._get_attribute('section-icon-features')
             items = attributes.find_elements(By.TAG_NAME, "li")
+            otros = ""
             for item in items:
                 text = item.text
                 if 'Total' in text:
@@ -98,14 +100,33 @@ class Scrapper():
                     features['n_banos'] = text.split(' Baño')[0]
                 elif 'Dormitorio' in text:
                     features['n_dormitorios'] = text.split(' Dormitorio')[0]
-                elif 'Antiguedad' in text:
-                    features['antiguedad'] = text.split(' Antiguedad')[0]
+                elif 'Antiguedad' in text or 'Antigüedad' in text:
+                    features['antiguedad'] = text.split(' ')[0]
+                elif 'Frente' in text or 'Contrafrente' in text:
+                    features['disposicion'] = text
                 else:
-                    features['otros'] = text
+                    otros.join(text + ', ')
+            # remuevo el ultimo ", " de otros si habia algo agregado.
+            features['otros'] = otros if len(otros) == 0 else otros[:-2]
+            if features['disposicion'] is None:
+                features = self.get_disposicion_from_description(features)
         except Exception:
             pass
         return features
 
+    def get_disposicion_from_description(self, features):
+        """
+        Seartch for Disposicio in the description of the article.
+        To be used only of the value is not present in the features field.
+        """
+        # read long description
+        description = self._get_attribute('longDescription')
+        if ' contrafrente ' in description.text.lower():
+            features['disposicion'] = 'Contrafrente'
+        elif ' frente ' in description.text.lower():
+            features['disposicion'] = 'Frente'
+
+        return features
     def get_users_views(self):
         try:
             views = self._get_attribute(value='user-views', by=By.ID)
